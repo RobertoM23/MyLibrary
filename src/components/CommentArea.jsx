@@ -8,7 +8,18 @@ class CommentArea extends React.Component {
     comments: [],
   };
 
+  componentDidMount() {
+    this.fetchComments();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.asin !== this.props.asin) {
+      this.fetchComments();
+    }
+  }
+
   fetchComments = async () => {
+    if (!this.props.asin) return;
     try {
       const res = await fetch(`https://striveschool-api.herokuapp.com/api/comments/${this.props.asin}`, {
         headers: {
@@ -21,10 +32,6 @@ class CommentArea extends React.Component {
       console.error('Errore nel fetch dei commenti:', error);
     }
   };
-
-  componentDidMount() {
-    this.fetchComments();
-  }
 
   render() {
     return (
