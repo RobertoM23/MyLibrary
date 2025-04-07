@@ -32,7 +32,7 @@ const SingleComment = ({ comment, onDelete }) => {
         <div>⭐ {comment.rate}/5</div>
       </div>
       <Button variant="danger" size="sm" onClick={handleDelete}>
-        🗑️
+        Elimina
       </Button>
     </li>
   );
