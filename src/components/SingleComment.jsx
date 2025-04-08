@@ -16,7 +16,7 @@ const SingleComment = ({ comment, onDelete }) => {
       });
 
       if (res.ok) {
-        onDelete();
+        onDelete(); // refresh comment list
       } else {
         alert('Errore nella cancellazione del commento');
       }

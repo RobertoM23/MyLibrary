@@ -1,46 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import CommentsList from './CommentsList';
 import AddComment from './AddComment';
 import AUTH_TOKEN from '../auth';
 
-class CommentArea extends React.Component {
-  state = {
-    comments: [],
-  };
+const CommentArea = ({ asin }) => {
+  const [comments, setComments] = useState([]);
 
-  componentDidMount() {
-    this.fetchComments();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.asin !== this.props.asin) {
-      this.fetchComments();
-    }
-  }
-
-  fetchComments = async () => {
-    if (!this.props.asin) return;
+  const fetchComments = async () => {
+    if (!asin) return;
     try {
-      const res = await fetch(`https://striveschool-api.herokuapp.com/api/comments/${this.props.asin}`, {
+      const res = await fetch(`https://striveschool-api.herokuapp.com/api/comments/${asin}`, {
         headers: {
           Authorization: AUTH_TOKEN
         }
       });
       const data = await res.json();
-      this.setState({ comments: data });
+      setComments(data);
     } catch (error) {
       console.error('Errore nel fetch dei commenti:', error);
     }
   };
 
-  render() {
-    return (
-      <div className="mt-2">
-        <CommentsList comments={this.state.comments} onDelete={this.fetchComments} />
-        <AddComment asin={this.props.asin} onCommentAdded={this.fetchComments} />
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    fetchComments();
+  }, [asin]);
+
+  return (
+    <div className="mt-2">
+      <CommentsList comments={comments} onDelete={fetchComments} />
+      <AddComment asin={asin} onCommentAdded={fetchComments} />
+    </div>
+  );
+};
 
 export default CommentArea;

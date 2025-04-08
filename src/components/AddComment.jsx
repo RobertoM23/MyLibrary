@@ -1,19 +1,24 @@
 import React from 'react';
+import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import AUTH_TOKEN from '../auth';
 
-class AddComment extends React.Component {
-  state = {
+const AddComment = ({ asin, onCommentAdded }) => {
+  const [formData, setFormData] = useState({
     comment: '',
-    rate: '1'
+    rate: '1',
+  });
+
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const commentData = {
-      comment: this.state.comment,
-      rate: this.state.rate,
-      elementId: this.props.asin
+      comment: formData.comment,
+      rate: formData.rate,
+      elementId: asin
     };
 
     try {
@@ -27,8 +32,8 @@ class AddComment extends React.Component {
       });
 
       if (res.ok) {
-        this.setState({ comment: '', rate: '1' });
-        this.props.onCommentAdded();
+        setFormData({ comment: '', rate: '1' });
+        onCommentAdded();
       } else {
         alert('Errore durante l\'invio del commento');
       }
@@ -37,31 +42,29 @@ class AddComment extends React.Component {
     }
   };
 
-  render() {
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <Form.Group className="mb-2">
-          <Form.Label>Recensione</Form.Label>
-          <Form.Control
-            type="text"
-            value={this.state.comment}
-            onChange={(e) => this.setState({ comment: e.target.value })}
-            required
-          />
-        </Form.Group>
-        <Form.Group className="mb-2">
-          <Form.Label>Voto</Form.Label>
-          <Form.Select
-            value={this.state.rate}
-            onChange={(e) => this.setState({ rate: e.target.value })}
-          >
-            {[1, 2, 3, 4, 5].map(n => <option key={n}>{n}</option>)}
-          </Form.Select>
-        </Form.Group>
-        <Button type="submit" variant="primary">Invia</Button>
-      </Form>
-    );
-  }
-}
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Form.Group className="mb-2">
+        <Form.Label>Recensione</Form.Label>
+        <Form.Control
+          type="text"
+          value={formData.comment}
+          onChange={(e) => handleChange('comment', e.target.value)}
+          required
+        />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Label>Voto</Form.Label>
+        <Form.Select
+          value={formData.rate}
+          onChange={(e) => handleChange('rate', e.target.value)}
+        >
+          {[1, 2, 3, 4, 5].map(n => <option key={n}>{n}</option>)}
+        </Form.Select>
+      </Form.Group>
+      <Button type="submit" variant="primary">Invia</Button>
+    </Form>
+  );
+};
 
 export default AddComment;
