@@ -3,6 +3,7 @@ import { Card } from 'react-bootstrap';
 const SingleBook = ({ book, isSelected, onClick }) => (
   <Card
     onClick={onClick}
+    data-testid={`book-${book.asin}`}
     style={{
       border: isSelected ? '3px solid red' : '1px solid lightgray',
       cursor: 'pointer',
